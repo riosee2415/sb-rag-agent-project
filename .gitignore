@@ -1,0 +1,87 @@
+# ─── Harness (local-only, never commit) ───────────────────────────────────────
+harness_commands/
+
+# ─── Claude Code (local settings only) ────────────────────────────────────────
+.claude/settings.local.json
+
+# ─── MCP config (contains API tokens — local only) ────────────────────────────
+.mcp.json
+
+# ─── Environment ──────────────────────────────────────────────────────────────
+.env
+.env.*
+!.env.example
+*.pem
+secrets/
+
+# ─── OS ───────────────────────────────────────────────────────────────────────
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V7
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# ─── IDEs ─────────────────────────────────────────────────────────────────────
+.idea/
+.vscode/
+*.swp
+*.swo
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# ─── Logs ─────────────────────────────────────────────────────────────────────
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# ─── Supabase local dev ───────────────────────────────────────────────────────
+supabase/.branches/
+supabase/.temp/
+
+# ─── Test Reports (generated artifacts — keep directory, ignore files) ────────
+test-reports/*.html
+test-reports/*.pdf
+
+# ─── Test Result JSON (intermediate, not source) ──────────────────────────────
+.test-results/*.json
+.test-results/fe-coverage/
+
+# ─── Node.js ─────────────────────────────────────────────────────────────────
+node_modules/
+.next/
+.cache/
+out/
+dist/
+
+# ─── Python ───────────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+.venv/
+venv/
+env/
+*.egg-info/
+.eggs/
+dist/
+build/
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+htmlcov/
+.coverage
+coverage.xml
+
+# ─── Misc ─────────────────────────────────────────────────────────────────────
+.turbo/
+tmp/
+temp/

@@ -1,0 +1,6 @@
+{
+  "chunk_size": 512,
+  "overlap": 100,
+  "optimized": false,
+  "note": "Default values. Run 'python scripts/chunk_optimizer.py' after data ingestion to optimize via RAGAS."
+}
