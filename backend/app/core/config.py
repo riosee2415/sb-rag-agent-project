@@ -1,5 +1,6 @@
+import json
+
 from loguru import logger
-from pydantic import field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -8,9 +9,22 @@ class Settings(BaseSettings):
 
     PROJECT_NAME: str = "SV Dev RAG Agent"
     ENVIRONMENT: str = "development"
-    HOST: str = "0.0.0.0"
+    HOST: str = "0.0.0.0"  # noqa: S104
     PORT: int = 8000
-    CORS_ORIGINS: list[str] = ["http://localhost:3000"]
+    # Stored as raw string; use .cors_origins_list for list[str]
+    CORS_ORIGINS: str = "*"
+
+    @property
+    def cors_origins_list(self) -> list[str]:
+        v = self.CORS_ORIGINS.strip()
+        if v.startswith("["):
+            try:
+                parsed = json.loads(v)
+                if isinstance(parsed, list):
+                    return [str(i) for i in parsed]
+            except (json.JSONDecodeError, ValueError):
+                pass
+        return [i.strip() for i in v.split(",") if i.strip()] or ["*"]
 
     # Supabase
     SUPABASE_URL: str = ""
@@ -35,13 +49,6 @@ class Settings(BaseSettings):
 
     # Redis (optional)
     REDIS_URL: str = ""
-
-    @field_validator("CORS_ORIGINS", mode="before")
-    @classmethod
-    def parse_cors(cls, v: str | list[str]) -> list[str]:
-        if isinstance(v, str):
-            return [i.strip() for i in v.split(",")]
-        return v
 
     def warn_missing(self) -> None:
         required = {

@@ -1,6 +1,5 @@
 @import "tailwindcss";
 @import "tw-animate-css";
-@import "shadcn/tailwind.css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -81,6 +80,44 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
+
+  /* RAG App color system — UI_GUIDE §2 */
+  --bg-base: #07070F;
+  --bg-surface: #0D0D1A;
+  --bg-elevated: #13132A;
+  --bg-hover: #16163A;
+  --bg-sidebar: #09091A;
+
+  --border-color: #1C1C3A;
+  --border-focus: #7C3AED;
+  --border-glow: rgba(124, 58, 237, 0.4);
+
+  --purple-900: #1E0A3C;
+  --purple-800: #2D1B69;
+  --purple-700: #4C1D95;
+  --purple-600: #7C3AED;
+  --purple-500: #8B5CF6;
+  --purple-400: #A78BFA;
+  --purple-300: #C084FC;
+  --purple-200: #E9D5FF;
+
+  --grad-primary: linear-gradient(135deg, #7C3AED 0%, #C084FC 100%);
+  --grad-subtle: linear-gradient(135deg, rgba(124, 58, 237, 0.15) 0%, rgba(192, 132, 252, 0.05) 100%);
+  --grad-text: linear-gradient(135deg, #A78BFA 0%, #C084FC 100%);
+
+  --glow-sm: 0 0 12px rgba(124, 58, 237, 0.15);
+  --glow-md: 0 0 24px rgba(124, 58, 237, 0.25);
+  --glow-lg: 0 0 48px rgba(124, 58, 237, 0.35);
+  --glow-input: 0 0 0 3px rgba(124, 58, 237, 0.25);
+
+  --text-primary: #EDE9FE;
+  --text-secondary: #A78BFA;
+  --text-muted: #6B7280;
+  --text-dim: #374151;
+
+  --success: #10B981;
+  --error: #EF4444;
+  --warning: #F59E0B;
 }
 
 .dark {
@@ -127,4 +164,52 @@
   html {
     @apply font-sans;
   }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.animate-shimmer {
+  animation: shimmer 2s infinite;
+}
+
+.shimmer {
+  background: linear-gradient(
+    90deg,
+    #1C1C3A 25%,
+    #2a2a4a 50%,
+    #1C1C3A 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #1C1C3A;
+  border-radius: 2px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #7C3AED;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #1C1C3A transparent;
 }

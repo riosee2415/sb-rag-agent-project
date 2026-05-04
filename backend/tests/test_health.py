@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import pytest
 from httpx import AsyncClient
 
@@ -7,3 +9,10 @@ async def test_health(client: AsyncClient) -> None:
     response = await client.get("/health")
     assert response.status_code == 200
     assert response.json() == {"status": "ok"}
+
+
+@pytest.mark.asyncio
+async def test_health_no_auth_required(client: AsyncClient) -> None:
+    """Health endpoint must be accessible without API secret."""
+    response = await client.get("/health")
+    assert response.status_code == 200

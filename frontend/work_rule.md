@@ -23,7 +23,7 @@ frontend/CLAUDE.md
 |-----------|----------------|
 | 신규 페이지/라우트 | src/app/, src/components/features/ |
 | UI 컴포넌트 | src/components/ui/ (shadcn), src/components/features/ |
-| 인증 / 세션 | src/lib/supabase/, src/middleware.ts |
+| 인증 / 세션 | src/lib/supabase/, src/proxy.ts |
 | API 호출 (백엔드) | src/lib/api/, src/types/api.ts |
 | 폼 | src/schemas/, RHF + Zod 관련 컴포넌트 |
 | 전역 상태 | src/store/ |

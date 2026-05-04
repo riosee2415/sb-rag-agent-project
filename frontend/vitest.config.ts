@@ -8,11 +8,17 @@ export default defineConfig({
     environment: 'jsdom',
     globals: true,
     setupFiles: ['./src/test/setup.ts'],
+    exclude: ['node_modules', '.next', 'tests/e2e/**'],
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html'],
       reportsDirectory: '../.test-results/fe-coverage',
       exclude: ['node_modules/', '.next/', 'src/components/ui/', '*.config.*'],
+    },
+    server: {
+      deps: {
+        inline: ['motion'],
+      },
     },
   },
   resolve: {
