@@ -1,8 +1,8 @@
-import { Sparkles } from 'lucide-react'
 import { getStatus } from '@/app/actions/chat'
 import { GoogleLoginButton } from '@/components/auth/GoogleLoginButton'
 import { UserMenu } from '@/components/auth/UserMenu'
 import { createClient } from '@/lib/supabase/server'
+import { ElysiaLogo } from '@/components/ui/ElysiaLogo'
 import type { StatusResponse } from '@/types/api'
 
 export async function Header() {
@@ -20,10 +20,8 @@ export async function Header() {
       <div className="flex h-full items-center justify-between px-4 lg:px-6">
         {/* Logo */}
         <div className="flex items-center gap-2">
-          <Sparkles className="h-5 w-5 text-[#7C3AED]" />
-          <span className="text-base font-bold bg-gradient-to-r from-[#A78BFA] to-[#C084FC] bg-clip-text text-transparent">
-            SV Dev RAG
-          </span>
+          <ElysiaLogo width={192} />
+          <span className="text-[9px] text-[#4B5563] tracking-widest hidden sm:block">v0.11</span>
         </div>
 
         {/* Center — video count */}

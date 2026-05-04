@@ -1,10 +1,14 @@
 'use client'
 
+import { useState } from 'react'
 import { motion } from 'motion/react'
-import { Sparkles, MessageCircle } from 'lucide-react'
-import { springHeavy, staggerContainer, staggerItem, pulseGlow } from '@/app/animations'
+import { MessageCircle } from 'lucide-react'
+import { springHeavy, staggerContainer, staggerItem } from '@/app/animations'
 import { GoogleLoginButton } from '@/components/auth/GoogleLoginButton'
+import { LoginConfirmDialog } from '@/components/auth/LoginConfirmDialog'
 import { useChat } from '@/hooks/useChat'
+import { useAuthStore } from '@/stores/authStore'
+import { ElysiaLogo } from '@/components/ui/ElysiaLogo'
 
 const SAMPLE_QUERIES = [
   '클로드 코드 처음 설치하고 세팅하는 방법은?',
@@ -14,11 +18,21 @@ const SAMPLE_QUERIES = [
 ]
 
 export function OnboardingCard() {
-  const { sendMessage: submit } = useChat()
+  const { sendMessage } = useChat()
+  const { user } = useAuthStore()
+  const [dialogOpen, setDialogOpen] = useState(false)
+
+  const handleQuery = (query: string) => {
+    if (!user) {
+      setDialogOpen(true)
+      return
+    }
+    void sendMessage(query)
+  }
 
   return (
-    <div className="flex-1 flex items-center justify-center px-4 py-8">
-      {/* Background blur glow */}
+    <div className="flex-1 flex items-center justify-center px-4 py-8 relative">
+      <LoginConfirmDialog open={dialogOpen} onClose={() => setDialogOpen(false)} />
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
         <div className="size-96 rounded-full bg-[#7C3AED]/10 blur-[80px]" aria-hidden="true" />
       </div>
@@ -29,29 +43,20 @@ export function OnboardingCard() {
         transition={springHeavy}
         className="relative z-10 w-full max-w-md"
       >
-        {/* Gradient border card */}
         <div className="p-[1px] rounded-2xl bg-gradient-to-br from-[#7C3AED]/40 via-[#1C1C3A] to-[#C084FC]/20">
           <div className="bg-[#0D0D1A] rounded-2xl p-8 flex flex-col items-center gap-6">
+
             {/* Logo */}
             <motion.div
-              animate={{
-                rotate: [0, 5, -5, 0],
-                boxShadow: pulseGlow.animate.boxShadow,
-              }}
-              transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-              className="size-16 rounded-2xl bg-gradient-to-br from-[#7C3AED] to-[#C084FC] flex items-center justify-center shadow-[0_0_24px_rgba(124,58,237,0.25)]"
+              animate={{ opacity: [0.85, 1, 0.85] }}
+              transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+              className="flex flex-col items-center gap-3"
             >
-              <Sparkles className="size-8 text-white" aria-hidden="true" />
-            </motion.div>
-
-            <div className="text-center">
-              <h1 className="text-2xl font-bold bg-gradient-to-r from-[#7C3AED] to-[#C084FC] bg-clip-text text-transparent">
-                SV Dev RAG
-              </h1>
-              <p className="text-sm text-[#6B7280] mt-2">
-                영상 콘텐츠를 AI로 빠르게 검색하세요
+              <ElysiaLogo width={360} glow />
+              <p className="text-[11px] text-[#6B7280] tracking-wide">
+                실밸개발자 영상 콘텐츠를 AI로 빠르게 검색하세요
               </p>
-            </div>
+            </motion.div>
 
             {/* Sample queries */}
             <motion.div
@@ -64,7 +69,7 @@ export function OnboardingCard() {
                 <motion.button
                   key={i}
                   type="button"
-                  onClick={() => submit(query)}
+                  onClick={() => handleQuery(query)}
                   variants={staggerItem}
                   whileHover={{ scale: 1.02, x: 4 }}
                   whileTap={{ scale: 0.97 }}
@@ -77,19 +82,14 @@ export function OnboardingCard() {
               ))}
             </motion.div>
 
-            <div className="w-full flex flex-col gap-3">
-              <GoogleLoginButton />
-              <motion.button
-                type="button"
-                onClick={() => submit('안녕하세요! SV Dev RAG에 대해 소개해주세요.')}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.97 }}
-                transition={{ type: 'spring', stiffness: 400, damping: 20 }}
-                className="cursor-pointer w-full text-sm text-[#6B7280] hover:text-[#A78BFA] transition-colors py-2"
-              >
-                로그인 없이 시작하기
-              </motion.button>
-            </div>
+            {/* Login — 비로그인 시에만 표시 */}
+            {!user && (
+              <div className="w-full">
+                <GoogleLoginButton />
+              </div>
+            )}
+
+
           </div>
         </div>
       </motion.div>

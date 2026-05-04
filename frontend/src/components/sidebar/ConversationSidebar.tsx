@@ -7,6 +7,7 @@ import { useAuthStore } from '@/stores/authStore'
 import { useChatStore } from '@/stores/chatStore'
 import { useConversations } from '@/hooks/useConversations'
 import { ConversationItem } from './ConversationItem'
+import { ElysiaLogo } from '@/components/ui/ElysiaLogo'
 import { sidebarContainerVariants } from '@/app/animations'
 
 interface ConversationSidebarProps {
@@ -52,7 +53,7 @@ export function ConversationSidebar({ mobileOpen, onMobileClose }: ConversationS
         </button>
       </div>
 
-      <div className="flex-1 overflow-y-auto px-2 py-2 space-y-1">
+      <div className="flex-1 overflow-y-auto px-2 py-2 space-y-1 min-h-0">
         <button
           onClick={() => void newConversation()}
           className="cursor-pointer flex w-full items-center gap-2 rounded-lg border border-dashed border-[#1C1C3A] px-3 py-2 text-xs text-[#6B7280] hover:border-purple-600/40 hover:text-[#A78BFA] hover:bg-[#16163A] transition-all"
@@ -89,6 +90,12 @@ export function ConversationSidebar({ mobileOpen, onMobileClose }: ConversationS
               onDelete={(id) => void removeConversation(id)}
             />
           ))}
+      </div>
+
+      {/* 소프트웨어 정보 */}
+      <div className="shrink-0 border-t border-[#1C1C3A] px-4 py-3 flex flex-col items-start gap-1.5">
+        <ElysiaLogo width={176} glow />
+        <span className="text-[10px] text-white/40 tracking-wide">v0.11 · AI엔지니어 UPU</span>
       </div>
     </motion.div>
   )

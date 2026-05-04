@@ -7,8 +7,8 @@ import { AuroraBackground } from '@/components/ui/AuroraBackground'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'SV Dev RAG Agent',
-  description: 'sv.developer 채널 AI 검색',
+  title: '엘리시아 (Elysia)',
+  description: '실밸개발자 유튜브 영상을 AI로 검색하세요 · by AI엔지니어 UPU',
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
