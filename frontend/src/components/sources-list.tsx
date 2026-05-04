@@ -98,13 +98,11 @@ export function SourcesList({ sources }: SourcesListProps) {
 
                 {/* Excerpt */}
                 <p
-                  className="truncate hover:whitespace-normal hover:overflow-visible transition-all duration-[180ms]"
                   style={{
                     fontSize: '13px',
                     color: v.textMuted,
                     lineHeight: '1.5',
                   }}
-                  title={src.excerpt}
                 >
                   {src.excerpt}
                 </p>
