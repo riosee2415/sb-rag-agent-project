@@ -1,17 +1,31 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Trash2 } from 'lucide-react'
 import { useAuthStore } from '@/stores/authStore'
 import { useChatStore } from '@/stores/chatStore'
 import { useConversations } from '@/hooks/useConversations'
 import { v } from '@/lib/design-tokens'
 
+function useUserCount() {
+  const [count, setCount] = useState<number | null>(null)
+
+  useEffect(() => {
+    fetch('/api/users/count')
+      .then((r) => r.json())
+      .then((d: { count: number }) => setCount(d.count))
+      .catch(() => setCount(null))
+  }, [])
+
+  return count
+}
+
 export function Sidebar() {
   const { user } = useAuthStore()
   const { conversationsRefreshTrigger, activeConversationId } = useChatStore()
   const { conversations, loadConversations, selectConversation, newConversation, removeConversation } =
     useConversations()
+  const userCount = useUserCount()
 
   useEffect(() => {
     if (user) loadConversations()
@@ -34,7 +48,8 @@ export function Sidebar() {
           borderBottom: `1px solid ${v.border}`,
         }}
       >
-        <div className="flex items-baseline gap-2">
+        {/* Logo + version */}
+        <div className="flex items-baseline gap-2 mb-2">
           <span
             style={{
               fontFamily:    v.fontMono,
@@ -49,6 +64,25 @@ export function Sidebar() {
           <span style={{ fontFamily: v.fontMono, fontSize: '11px', color: v.textDim }}>
             v0.11
           </span>
+        </div>
+
+        {/* User count */}
+        <div
+          style={{
+            fontFamily:    v.fontMono,
+            fontSize:      '10px',
+            color:         v.textDim,
+            letterSpacing: '0.02em',
+          }}
+          aria-live="polite"
+          aria-label={`현재 플랫폼 이용자 ${userCount ?? 0}명`}
+        >
+          현재 플랫폼 이용자 :{' '}
+          {userCount === null ? (
+            <span style={{ opacity: 0.4 }}>—</span>
+          ) : (
+            <span style={{ color: v.textMuted }}>{userCount.toLocaleString()}명</span>
+          )}
         </div>
       </div>
 
