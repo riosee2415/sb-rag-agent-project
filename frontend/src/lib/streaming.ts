@@ -3,13 +3,11 @@ import type { SourceItem } from '@/types/api'
 const META_SENTINEL = '\x00META\x00'
 const END_SENTINEL   = '\x00END\x00'
 
-/* Characters rendered per tick (12 ms ≈ 83 fps).
-   4 chars × 83 fps ≈ 330 chars/s — natural reading pace for Korean + English. */
-const CHARS_PER_TICK = 4
-const TICK_MS        = 12
+const CHARS_PER_TICK = 4   // characters rendered per tick
+const TICK_MS        = 12  // ~83 fps
 
 export interface StreamMeta {
-  sources:         SourceItem[] | null
+  sources:          SourceItem[] | null
   conversation_id?: string
 }
 
@@ -24,13 +22,6 @@ export interface StreamResult {
   stop: () => void
 }
 
-/**
- * Fetch /api/chat with streaming, then render the answer text character-by-
- * character at ~83 fps to create a natural typing effect.
- *
- * Format produced by the API route:
- *   <answer text>\x00META\x00<JSON>\x00END\x00
- */
 export function streamChat(
   body: {
     query:            string
@@ -41,7 +32,7 @@ export function streamChat(
 ): StreamResult {
   const { onText, onMeta, onDone, onError } = callbacks
 
-  const ac      = new AbortController()
+  const ac       = new AbortController()
   let displayBuf = ''
   let fetchDone  = false
   let stopped    = false
@@ -55,7 +46,7 @@ export function streamChat(
   }
 
   function flushTick() {
-    /* If buffer is empty, check whether fetch is done. */
+    /* Buffer empty — check if fetch is also done */
     if (!displayBuf.length) {
       if (fetchDone) {
         cleanup()
@@ -64,12 +55,22 @@ export function streamChat(
       return
     }
 
-    /* Detect the metadata sentinel — flush text before it, parse meta. */
     const metaIdx = displayBuf.indexOf(META_SENTINEL)
-    if (metaIdx >= 0) {
-      if (metaIdx > 0) onText(displayBuf.slice(0, metaIdx))
 
-      const rest   = displayBuf.slice(metaIdx + META_SENTINEL.length)
+    if (metaIdx >= 0) {
+      if (metaIdx > 0) {
+        /* Text still exists before the sentinel.
+           Display it CHARS_PER_TICK chars at a time so the animation is visible.
+           Do NOT flush everything at once — that was the streaming bug. */
+        const n = Math.min(CHARS_PER_TICK, metaIdx)
+        onText(displayBuf.slice(0, n))
+        displayBuf = displayBuf.slice(n)
+        return
+      }
+
+      /* Sentinel is at position 0: all preceding text has been displayed.
+         Now parse and emit the metadata. */
+      const rest   = displayBuf.slice(META_SENTINEL.length)
       const endIdx = rest.indexOf(END_SENTINEL)
 
       if (endIdx >= 0) {
@@ -84,16 +85,14 @@ export function streamChat(
       return
     }
 
-    /* Normal display: emit up to CHARS_PER_TICK characters per tick. */
+    /* Normal path: no sentinel in sight — display CHARS_PER_TICK chars */
     const n = Math.min(CHARS_PER_TICK, displayBuf.length)
     onText(displayBuf.slice(0, n))
     displayBuf = displayBuf.slice(n)
   }
 
-  /* Start the display loop before the fetch so the first byte shows instantly. */
   timer = setInterval(flushTick, TICK_MS)
 
-  /* Fetch runs concurrently; data lands in displayBuf as it arrives. */
   ;(async () => {
     try {
       const res = await fetch('/api/chat', {
@@ -119,12 +118,11 @@ export function streamChat(
       }
 
       fetchDone = true
-      /* flushTick will see fetchDone and call onDone once the buffer empties. */
+      /* flushTick will call onDone once the display buffer is emptied */
     } catch (err) {
       cleanup()
       if (err instanceof Error) {
         if (err.name !== 'AbortError') onError(err)
-        /* AbortError means stop() was called; onDone already dispatched. */
       }
     }
   })()
@@ -134,8 +132,6 @@ export function streamChat(
       stopped = true
       ac.abort()
       cleanup()
-      /* Call onDone on next tick so callers that synchronously check state
-         still see isStreaming=true before the update lands. */
       setTimeout(onDone, 0)
     },
   }

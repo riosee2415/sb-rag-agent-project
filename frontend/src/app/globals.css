@@ -193,6 +193,10 @@
   to   { transform: translateX(4px); }
 }
 
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
 /* ── Utility classes ──────────────────────────────────────────────────────── */
 .cursor-blink {
   animation: blink 1s step-end infinite;

@@ -53,25 +53,18 @@ export function ChatInput({ onSend, isLoading, style }: ChatInputProps) {
     [handleSend],
   )
 
-  /* Compute border color based on state priority: focus > hover > default */
-  const borderColor = isFocused
-    ? v.accent
-    : isHovered
-    ? v.borderBright
-    : v.border
-
-  const boxShadow = isFocused ? v.glowAccent : 'none'
+  const borderColor = isFocused ? v.accent : isHovered ? v.borderBright : v.border
+  const boxShadow   = isFocused ? v.glowAccent : 'none'
 
   return (
     <div style={style} role="region" aria-label="메시지 입력">
-      {/* Input wrapper */}
       <div
         className="input-wrapper flex items-end gap-3 border"
         style={{
           borderColor,
-          borderRadius: '2px',
+          borderRadius:    '2px',
           backgroundColor: isLoading ? v.surface : v.surfaceHover,
-          padding: '12px 14px',
+          padding:         '12px 14px',
           boxShadow,
         }}
         onMouseEnter={() => setIsHovered(true)}
@@ -94,7 +87,7 @@ export function ChatInput({ onSend, isLoading, style }: ChatInputProps) {
             minHeight:  '20px',
             maxHeight:  '180px',
             overflowY:  'auto',
-            opacity:    isLoading ? 0.6 : 1,
+            opacity:    isLoading ? 0.5 : 1,
             transition: `color var(--dur) var(--ease-out), opacity var(--dur) var(--ease-out)`,
           }}
           placeholder={isLoading ? 'elysia is thinking...' : "ask anything about sv.developer's videos"}
@@ -103,12 +96,11 @@ export function ChatInput({ onSend, isLoading, style }: ChatInputProps) {
           aria-disabled={isLoading}
         />
 
-        {/* Send / loading indicator */}
+        {/* Send indicator — dimmed while loading, interactive when idle */}
         <button
           type="button"
           onClick={handleSend}
           disabled={isLoading}
-          className="flex-shrink-0 leading-none"
           style={{
             fontFamily: v.fontMono,
             fontSize:   '13px',
@@ -117,7 +109,8 @@ export function ChatInput({ onSend, isLoading, style }: ChatInputProps) {
             border:     'none',
             padding:    '2px 0',
             lineHeight: 1,
-            transition: `color var(--dur) var(--ease-out)`,
+            opacity:    isLoading ? 0.4 : 1,
+            transition: `color var(--dur) var(--ease-out), opacity var(--dur) var(--ease-out)`,
           }}
           onMouseEnter={(e) => {
             if (!isLoading) e.currentTarget.style.color = v.accent
@@ -127,9 +120,7 @@ export function ChatInput({ onSend, isLoading, style }: ChatInputProps) {
           }}
           aria-label="메시지 전송"
         >
-          {isLoading
-            ? <span className="cursor-blink" aria-hidden="true">▊</span>
-            : '↵'}
+          ↵
         </button>
       </div>
 
@@ -143,11 +134,7 @@ export function ChatInput({ onSend, isLoading, style }: ChatInputProps) {
           <div
             key={key}
             className="flex items-center gap-1.5"
-            style={{
-              fontFamily: v.fontMono,
-              fontSize:   '11px',
-              color:      v.textDim,
-            }}
+            style={{ fontFamily: v.fontMono, fontSize: '11px', color: v.textDim }}
           >
             <span aria-hidden="true">{key}</span>
             <span>{label}</span>
