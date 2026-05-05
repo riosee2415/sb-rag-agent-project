@@ -99,8 +99,8 @@
   /* ── Text hierarchy (4 levels) ───────────────────────────────────────── */
   --text-bright:    #ffffff;      /* headings, active items, key info   */
   --el-text:        #ededed;      /* body text                          */
-  --el-text-muted:  #888888;      /* metadata, secondary                */
-  --el-text-dim:    #555555;      /* inactive / background              */
+  --el-text-muted:  #b0b0b0;      /* metadata, secondary                */
+  --el-text-dim:    #808080;      /* inactive / background              */
 
   /* ── Accent ───────────────────────────────────────────────────────────── */
   --el-accent:     #c4f542;
@@ -146,7 +146,7 @@
   }
 
   html {
-    font-size: 14px;
+    font-size: 15px;
     -webkit-text-size-adjust: 100%;
   }
 

@@ -81,7 +81,7 @@ export function ChatInput({ onSend, isLoading, style }: ChatInputProps) {
           className="flex-1"
           style={{
             fontFamily: v.fontMono,
-            fontSize:   '13px',
+            fontSize:   '14px',
             color:      isLoading ? v.textDim : v.text,
             lineHeight: '1.6',
             minHeight:  '20px',
@@ -103,7 +103,7 @@ export function ChatInput({ onSend, isLoading, style }: ChatInputProps) {
           disabled={isLoading}
           style={{
             fontFamily: v.fontMono,
-            fontSize:   '13px',
+            fontSize:   '14px',
             color:      isLoading ? v.textDim : v.textMuted,
             background: 'none',
             border:     'none',
@@ -134,7 +134,7 @@ export function ChatInput({ onSend, isLoading, style }: ChatInputProps) {
           <div
             key={key}
             className="flex items-center gap-1.5"
-            style={{ fontFamily: v.fontMono, fontSize: '11px', color: v.textDim }}
+            style={{ fontFamily: v.fontMono, fontSize: '12px', color: v.textDim }}
           >
             <span aria-hidden="true">{key}</span>
             <span>{label}</span>

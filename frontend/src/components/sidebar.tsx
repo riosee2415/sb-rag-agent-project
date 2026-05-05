@@ -53,7 +53,7 @@ export function Sidebar() {
           <span
             style={{
               fontFamily:    v.fontMono,
-              fontSize:      '13px',
+              fontSize:      '14px',
               letterSpacing: '0.2em',
               fontWeight:    600,
               color:         v.textBright,
@@ -61,7 +61,7 @@ export function Sidebar() {
           >
             ELYSIA
           </span>
-          <span style={{ fontFamily: v.fontMono, fontSize: '11px', color: v.textDim }}>
+          <span style={{ fontFamily: v.fontMono, fontSize: '12px', color: v.textDim }}>
             v0.11
           </span>
         </div>
@@ -70,7 +70,7 @@ export function Sidebar() {
         <div
           style={{
             fontFamily:    v.fontMono,
-            fontSize:      '10px',
+            fontSize:      '11px',
             color:         v.textDim,
             letterSpacing: '0.02em',
           }}
@@ -130,7 +130,7 @@ function NewChatButton({ onClick }: { onClick: () => void }) {
       style={{
         padding:       '11px 16px',
         fontFamily:    v.fontMono,
-        fontSize:      '11px',
+        fontSize:      '12px',
         letterSpacing: '0.05em',
         color:         v.textMuted,
         background:    'none',
@@ -150,7 +150,7 @@ function NewChatButton({ onClick }: { onClick: () => void }) {
       }}
       aria-label="새 대화 시작"
     >
-      <span style={{ fontSize: '12px', lineHeight: 1, flexShrink: 0 }}>+</span>
+      <span style={{ fontSize: '13px', lineHeight: 1, flexShrink: 0 }}>+</span>
       <span
         ref={labelRef}
         style={{ transition: `transform 180ms var(--ease-out)` }}
@@ -173,14 +173,14 @@ function KeyboardHints() {
           <div
             key={key}
             className="flex items-center gap-3"
-            style={{ fontFamily: v.fontMono, fontSize: '11px', color: v.textDim, cursor: 'default' }}
+            style={{ fontFamily: v.fontMono, fontSize: '12px', color: v.textDim, cursor: 'default' }}
           >
             <span
               style={{
                 padding:     '2px 6px',
                 border:      `1px solid ${v.border}`,
                 borderRadius:'1px',
-                fontSize:    '10px',
+                fontSize:    '11px',
               }}
             >
               {key}
@@ -248,7 +248,7 @@ function ConversationRow({ title, isActive, onSelect, onDelete }: ConversationRo
         style={{
           padding:    '10px 12px',
           fontFamily: v.fontSans,
-          fontSize:   '13px',
+          fontSize:   '14px',
           background: 'none',
           border:     'none',
         }}
@@ -297,7 +297,7 @@ function OwnerInfo() {
       <div
         style={{
           fontFamily:    v.fontMono,
-          fontSize:      '11px',
+          fontSize:      '12px',
           letterSpacing: '0.15em',
           color:         v.textDim,
           marginBottom:  '6px',
@@ -308,7 +308,7 @@ function OwnerInfo() {
       <div
         style={{
           fontFamily:   v.fontMono,
-          fontSize:     '13px',
+          fontSize:     '14px',
           color:        v.textBright,
           marginBottom: '4px',
           fontWeight:   500,
@@ -321,7 +321,7 @@ function OwnerInfo() {
         className="cursor-pointer"
         style={{
           fontFamily:     v.fontMono,
-          fontSize:       '11px',
+          fontSize:       '12px',
           color:          v.textMuted,
           textDecoration: 'none',
           display:        'block',

@@ -66,7 +66,7 @@ function ElapsedTimer({
 
   return (
     <span
-      style={{ fontFamily: v.fontMono, fontSize: '10px', color: v.textDim }}
+      style={{ fontFamily: v.fontMono, fontSize: '11px', color: v.textDim }}
       aria-live="polite"
       aria-label={`응답 시간 ${(elapsed / 1000).toFixed(1)}초`}
     >
@@ -113,7 +113,7 @@ export function ChatMessage({
         <span
           style={{
             fontFamily:    v.fontMono,
-            fontSize:      '11px',
+            fontSize:      '12px',
             letterSpacing: '0.05em',
             color:         isUser ? v.accent : v.textMuted,
             fontWeight:    isUser ? 600 : 400,
@@ -138,7 +138,7 @@ export function ChatMessage({
               onClick={onStop}
               style={{
                 fontFamily:    v.fontMono,
-                fontSize:      '10px',
+                fontSize:      '11px',
                 color:         v.textMuted,
                 background:    'none',
                 border:        'none',
@@ -157,7 +157,7 @@ export function ChatMessage({
           {/* Timestamp — done state only */}
           {!isActive && (
             <span
-              style={{ fontFamily: v.fontMono, fontSize: '11px', color: v.textDim }}
+              style={{ fontFamily: v.fontMono, fontSize: '12px', color: v.textDim }}
               aria-label={`전송 시간 ${time}`}
             >
               {time}
@@ -189,7 +189,7 @@ export function ChatMessage({
           <p
             className="whitespace-pre-wrap break-words"
             style={{
-              fontSize:      '14px',
+              fontSize:      '15px',
               color:         isUser ? v.textBright : v.text,
               lineHeight:    isUser ? '1.65' : '1.7',
               letterSpacing: '-0.01em',
@@ -238,7 +238,7 @@ function ActionButton({ label, onClick }: { label: string; onClick: () => void }
       onClick={onClick}
       style={{
         fontFamily:    v.fontMono,
-        fontSize:      '11px',
+        fontSize:      '12px',
         color:         v.textDim,
         letterSpacing: '0.02em',
         background:    'none',

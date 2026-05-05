@@ -18,7 +18,7 @@ export function SourcesList({ sources }: SourcesListProps) {
         <span
           style={{
             fontFamily: v.fontMono,
-            fontSize: '11px',
+            fontSize: '12px',
             letterSpacing: '0.15em',
             color: v.accent,
             fontWeight: 600,
@@ -29,7 +29,7 @@ export function SourcesList({ sources }: SourcesListProps) {
         <span
           style={{
             fontFamily: v.fontMono,
-            fontSize: '11px',
+            fontSize: '12px',
             color: v.textDim,
           }}
         >
@@ -57,7 +57,7 @@ export function SourcesList({ sources }: SourcesListProps) {
                 aria-hidden="true"
                 style={{
                   fontFamily: v.fontMono,
-                  fontSize: '11px',
+                  fontSize: '12px',
                   color: v.accent,
                   flexShrink: 0,
                   lineHeight: '1.6',
@@ -73,7 +73,7 @@ export function SourcesList({ sources }: SourcesListProps) {
                 <div className="flex items-start justify-between gap-4 mb-1">
                   <span
                     style={{
-                      fontSize: '14px',
+                      fontSize: '15px',
                       color: v.text,
                       lineHeight: '1.4',
                       fontWeight: 500,
@@ -89,7 +89,7 @@ export function SourcesList({ sources }: SourcesListProps) {
                   className="mb-2"
                   style={{
                     fontFamily: v.fontMono,
-                    fontSize: '11px',
+                    fontSize: '12px',
                     color: v.textMuted,
                   }}
                 >
@@ -99,7 +99,7 @@ export function SourcesList({ sources }: SourcesListProps) {
                 {/* Excerpt */}
                 <p
                   style={{
-                    fontSize: '13px',
+                    fontSize: '14px',
                     color: v.textMuted,
                     lineHeight: '1.5',
                   }}
@@ -124,7 +124,7 @@ function ViewLink({ href, label }: { href: string; label: string }) {
       className="flex-shrink-0 transition-colors duration-[180ms]"
       style={{
         fontFamily: 'var(--font-mono)',
-        fontSize: '11px',
+        fontSize: '12px',
         color: 'var(--el-text-dim)',
         whiteSpace: 'nowrap',
         textDecoration: 'none',

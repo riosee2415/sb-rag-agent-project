@@ -150,7 +150,7 @@ function TopBar({ user }: { user: User }) {
           border:          `1px solid ${v.border}`,
           backgroundColor: v.surfaceElevated,
           fontFamily:      v.fontMono,
-          fontSize:        '10px',
+          fontSize:        '11px',
           color:           v.textMuted,
           userSelect:      'none',
         }}
@@ -160,7 +160,7 @@ function TopBar({ user }: { user: User }) {
       </div>
 
       {/* Email */}
-      <span style={{ fontFamily: v.fontMono, fontSize: '11px', color: v.textDim }}>
+      <span style={{ fontFamily: v.fontMono, fontSize: '12px', color: v.textDim }}>
         {email}
       </span>
 
@@ -171,7 +171,7 @@ function TopBar({ user }: { user: User }) {
         className="cursor-pointer"
         style={{
           fontFamily:    v.fontMono,
-          fontSize:      '11px',
+          fontSize:      '12px',
           color:         v.textDim,
           background:    'none',
           border:        'none',
@@ -197,7 +197,7 @@ function LoginPrompt() {
       <span
         style={{
           fontFamily:    v.fontMono,
-          fontSize:      '11px',
+          fontSize:      '12px',
           color:         v.textDim,
           letterSpacing: '0.02em',
         }}
