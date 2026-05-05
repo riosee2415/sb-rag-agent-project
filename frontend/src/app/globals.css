@@ -82,29 +82,45 @@
   --sidebar-border: #262626;
   --sidebar-ring: #c4f542;
 
-  /* Elysia Design System */
+  /* ── Elysia Core Tokens ───────────────────────────────────────────────── */
   --bg: #0a0a0a;
   --surface: #141414;
   --surface-hover: #1c1c1c;
-  --el-border: #262626;
+
+  /* ── NEW: Extended surface hierarchy ──────────────────────────────────── */
+  --surface-elevated: #1f1f1f;
+  --surface-bright:   #2a2a2a;
+
+  /* ── Border hierarchy ─────────────────────────────────────────────────── */
+  --el-border:        #262626;
   --el-border-strong: #333333;
-  --el-text: #ededed;
-  --el-text-muted: #888888;
-  --el-text-dim: #555555;
-  --el-accent: #c4f542;
+  --border-bright:    #404040;
+
+  /* ── Text hierarchy (4 levels) ───────────────────────────────────────── */
+  --text-bright:    #ffffff;      /* headings, active items, key info   */
+  --el-text:        #ededed;      /* body text                          */
+  --el-text-muted:  #888888;      /* metadata, secondary                */
+  --el-text-dim:    #555555;      /* inactive / background              */
+
+  /* ── Accent ───────────────────────────────────────────────────────────── */
+  --el-accent:     #c4f542;
   --el-accent-dim: rgba(196, 245, 66, 0.125);
 
-  /* Typography */
+  /* ── Focus & glow ─────────────────────────────────────────────────────── */
+  --glow-accent: 0 0 0 1px rgba(196, 245, 66, 0.35);
+  --glow-bright: 0 0 0 1px rgba(255, 255, 255, 0.1);
+
+  /* ── Typography ───────────────────────────────────────────────────────── */
   --font-sans: 'Pretendard Variable', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
   --font-mono: var(--font-jbm, 'JetBrains Mono'), 'Cascadia Code', 'Fira Code', Consolas, monospace;
 
-  /* Layout */
-  --sidebar-w: 240px;
-  --chat-max-w: 720px;
-  --page-px: 48px;
+  /* ── Layout ───────────────────────────────────────────────────────────── */
+  --sidebar-w:   240px;
+  --chat-max-w:  720px;
+  --page-px:     48px;
 
-  /* Motion */
-  --dur: 180ms;
+  /* ── Motion ───────────────────────────────────────────────────────────── */
+  --dur:      180ms;
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -146,54 +162,85 @@
   }
 }
 
-/* ── Animations ───────────────────────────────────────────────────────────── */
+/* ── Keyframes ────────────────────────────────────────────────────────────── */
 @keyframes blink {
-  0%,
-  100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0;
-  }
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
 }
 
 @keyframes msg-in {
-  from {
-    opacity: 0;
-    transform: translateY(4px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes fade-in {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes sidebar-enter {
+  from { opacity: 0.6; transform: translateX(-8px); }
+  to   { opacity: 1;   transform: translateX(0); }
+}
+
+@keyframes main-enter {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes arrow-nudge {
+  from { transform: translateX(0); }
+  to   { transform: translateX(4px); }
 }
 
 /* ── Utility classes ──────────────────────────────────────────────────────── */
 .cursor-blink {
   animation: blink 1s step-end infinite;
   display: inline-block;
-  color: var(--el-text-dim);
+  color: var(--el-accent);
   font-family: var(--font-mono);
+}
+
+/* prefers-reduced-motion: cursor blinks are purely decorative, disable them */
+@media (prefers-reduced-motion: reduce) {
+  .cursor-blink {
+    animation: none;
+    opacity: 1;
+  }
 }
 
 .msg-enter {
   animation: msg-in 200ms var(--ease-out) both;
 }
 
+.msg-label {
+  animation: msg-in 200ms var(--ease-out) both;
+}
+.msg-hr {
+  animation: msg-in 200ms var(--ease-out) 60ms both;
+}
+.msg-body {
+  animation: msg-in 200ms var(--ease-out) 120ms both;
+}
+
 .fade-in {
   animation: fade-in var(--dur) var(--ease-out) both;
 }
 
-/* ── Source item — accent border slide from left ─────────────────────────── */
+.actions-fade {
+  animation: fade-in 220ms var(--ease-out) 80ms both;
+}
+
+/* ── Page entry animations ────────────────────────────────────────────────── */
+.sidebar-enter {
+  animation: sidebar-enter 240ms var(--ease-out) both;
+}
+
+.main-enter {
+  animation: main-enter 320ms var(--ease-out) 80ms both;
+}
+
+/* ── Source item — accent border slide ────────────────────────────────────── */
 .source-item {
   position: relative;
   padding-left: 12px;
@@ -216,9 +263,32 @@
   transform: scaleY(1);
 }
 
-/* ── Input focus state ────────────────────────────────────────────────────── */
+/* ── Input wrapper ────────────────────────────────────────────────────────── */
+.input-wrapper {
+  transition:
+    border-color var(--dur) var(--ease-out),
+    box-shadow var(--dur) var(--ease-out);
+}
+
+.input-wrapper:hover {
+  border-color: var(--border-bright);
+}
+
 .input-wrapper:focus-within {
-  border-color: var(--el-accent);
+  border-color: var(--el-accent) !important;
+  box-shadow: var(--glow-accent);
+}
+
+/* ── Global focus ring ────────────────────────────────────────────────────── */
+:focus-visible {
+  outline: none;
+  box-shadow: var(--glow-accent);
+}
+
+/* ── Button :active feedback ──────────────────────────────────────────────── */
+button:not(:disabled):active {
+  transform: translateY(1px);
+  transition: transform 60ms ease;
 }
 
 /* ── Cursor rules ─────────────────────────────────────────────────────────── */
@@ -246,12 +316,13 @@ textarea {
 textarea::placeholder {
   color: var(--el-text-dim);
   font-family: var(--font-mono);
+  font-weight: 400;
 }
 
-/* ── Scrollbar ────────────────────────────────────────────────────────────── */
+/* ── Custom scrollbar (6px, thumb fades on hover) ────────────────────────── */
 ::-webkit-scrollbar {
-  width: 4px;
-  height: 4px;
+  width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
@@ -260,11 +331,12 @@ textarea::placeholder {
 
 ::-webkit-scrollbar-thumb {
   background: var(--el-border);
-  border-radius: 2px;
+  border-radius: 3px;
+  transition: background var(--dur);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--el-text-dim);
+  background: var(--border-bright);
 }
 
 * {

@@ -1,47 +1,96 @@
 import { create } from 'zustand'
 import type { MessageItem, SourceItem } from '@/types/api'
 
-interface LocalMessage {
-  id: string
-  role: 'user' | 'assistant'
-  content: string
-  sources?: SourceItem[] | null
-  created_at: string
-  isLoading?: boolean
+export interface LocalMessage {
+  id:                  string
+  role:                'user' | 'assistant'
+  content:             string
+  sources?:            SourceItem[] | null
+  created_at:          string
+  isLoading?:          boolean
+  isStreaming?:        boolean
+  streamingStartedAt?: number   // ms timestamp — set on first chunk
 }
 
 interface ChatStore {
-  messages: LocalMessage[]
-  isLoading: boolean
-  activeConversationId: string | null
-  conversationsRefreshTrigger: number
-  addMessage: (msg: LocalMessage) => void
-  setMessages: (msgs: MessageItem[]) => void
-  updateLastMessage: (content: string, sources?: SourceItem[] | null) => void
-  setLoading: (v: boolean) => void
-  setActiveConversation: (id: string | null) => void
-  clearMessages: () => void
-  triggerConversationsRefresh: () => void
+  messages:                   LocalMessage[]
+  isLoading:                  boolean
+  activeConversationId:       string | null
+  conversationsRefreshTrigger:number
+  addMessage:                 (msg: LocalMessage) => void
+  setMessages:                (msgs: MessageItem[]) => void
+  updateLastMessage:          (content: string, sources?: SourceItem[] | null) => void
+  appendToLastMessage:        (chunk: string) => void
+  finalizeLastMessage:        (sources: SourceItem[] | null) => void
+  setLoading:                 (v: boolean) => void
+  setActiveConversation:      (id: string | null) => void
+  clearMessages:              () => void
+  triggerConversationsRefresh:() => void
 }
 
 export const useChatStore = create<ChatStore>((set) => ({
-  messages: [],
-  isLoading: false,
-  activeConversationId: null,
-  conversationsRefreshTrigger: 0,
+  messages:                   [],
+  isLoading:                  false,
+  activeConversationId:       null,
+  conversationsRefreshTrigger:0,
+
   addMessage: (msg) => set((s) => ({ messages: [...s.messages, msg] })),
+
   setMessages: (msgs) =>
-    set({ messages: msgs.map((m) => ({ ...m, isLoading: false })) }),
+    set({ messages: msgs.map((m) => ({ ...m, isLoading: false, isStreaming: false })) }),
+
   updateLastMessage: (content, sources) =>
     set((s) => {
       const msgs = [...s.messages]
       const last = msgs[msgs.length - 1]
-      if (last) msgs[msgs.length - 1] = { ...last, content, sources, isLoading: false }
+      if (last) {
+        msgs[msgs.length - 1] = {
+          ...last,
+          content,
+          sources,
+          isLoading:   false,
+          isStreaming:  false,
+        }
+      }
       return { messages: msgs }
     }),
+
+  appendToLastMessage: (chunk) =>
+    set((s) => {
+      const msgs = [...s.messages]
+      const last = msgs[msgs.length - 1]
+      if (!last) return s
+      const isFirstChunk = last.isLoading && !last.isStreaming
+      msgs[msgs.length - 1] = {
+        ...last,
+        content:             last.content + chunk,
+        isLoading:           false,
+        isStreaming:         true,
+        streamingStartedAt:  isFirstChunk ? Date.now() : last.streamingStartedAt,
+      }
+      return { messages: msgs }
+    }),
+
+  finalizeLastMessage: (sources) =>
+    set((s) => {
+      const msgs = [...s.messages]
+      const last = msgs[msgs.length - 1]
+      if (!last) return s
+      msgs[msgs.length - 1] = {
+        ...last,
+        sources:     sources ?? last.sources,
+        isLoading:   false,
+        isStreaming:  false,
+      }
+      return { messages: msgs }
+    }),
+
   setLoading: (v) => set({ isLoading: v }),
+
   setActiveConversation: (id) => set({ activeConversationId: id }),
+
   clearMessages: () => set({ messages: [] }),
+
   triggerConversationsRefresh: () =>
     set((s) => ({ conversationsRefreshTrigger: s.conversationsRefreshTrigger + 1 })),
 }))

@@ -16,7 +16,7 @@ import type { User } from '@supabase/supabase-js'
 export function ChatPageClient() {
   const { initialize, user, isLoaded } = useAuthStore()
   const { messages } = useChatStore()
-  const { sendMessage, isLoading } = useChat()
+  const { sendMessage, stopStreaming, isLoading } = useChat()
   const bottomRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -27,27 +27,27 @@ export function ChatPageClient() {
   useEffect(() => {
     if (!bottomRef.current) return
     const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    bottomRef.current.scrollIntoView({
-      behavior: prefersReduced ? 'instant' : 'smooth',
-    })
+    bottomRef.current.scrollIntoView({ behavior: prefersReduced ? 'instant' : 'smooth' })
   }, [messages])
 
   const hasMessages = messages.length > 0
 
+  /* Index of the message currently streaming (the last assistant msg if isStreaming) */
+  const streamingIdx = messages.findLastIndex(
+    (m) => m.role === 'assistant' && (m.isStreaming || m.isLoading),
+  )
+
   return (
-    <div
-      className="flex h-[100dvh] overflow-hidden"
-      style={{ backgroundColor: v.bg }}
-    >
+    <div className="flex h-[100dvh] overflow-hidden" style={{ backgroundColor: v.bg }}>
       {/* ── Left Sidebar ─────────────────────────────────────────── */}
       <Sidebar />
 
       {/* ── Main Content ─────────────────────────────────────────── */}
-      <div className="flex flex-col flex-1 overflow-hidden">
-        {/* ── Top Bar: 사용자 정보 ────────────────────────────────── */}
+      <div className="main-enter flex flex-col flex-1 overflow-hidden">
+        {/* ── Top Bar ─────────────────────────────────────────────── */}
         {isLoaded && user && <TopBar user={user} />}
 
-        {/* ── Scrollable area ─────────────────────────────────────── */}
+        {/* ── Scrollable area ──────────────────────────────────────── */}
         <div className="flex-1 overflow-y-auto">
           {!hasMessages ? (
             <div className="h-full flex items-start pt-16">
@@ -56,10 +56,10 @@ export function ChatPageClient() {
           ) : (
             <div
               style={{
-                paddingTop: '40px',
+                paddingTop:    '40px',
                 paddingBottom: '24px',
-                paddingLeft: 'var(--page-px)',
-                paddingRight: 'var(--page-px)',
+                paddingLeft:   'var(--page-px)',
+                paddingRight:  'var(--page-px)',
               }}
             >
               <div style={{ maxWidth: 'var(--chat-max-w)' }}>
@@ -72,8 +72,11 @@ export function ChatPageClient() {
                     sources={msg.sources}
                     created_at={msg.created_at}
                     isLoading={msg.isLoading}
+                    isStreaming={msg.isStreaming}
+                    streamingStartedAt={msg.streamingStartedAt}
+                    onStop={idx === streamingIdx ? stopStreaming : undefined}
                     onRetry={
-                      msg.role === 'assistant' && !msg.isLoading
+                      msg.role === 'assistant' && !msg.isLoading && !msg.isStreaming
                         ? () => {
                             const prevMsg = messages[idx - 1]
                             if (prevMsg?.role === 'user') sendMessage(prevMsg.content)
@@ -88,12 +91,12 @@ export function ChatPageClient() {
           )}
         </div>
 
-        {/* ── Input area: 로그인 필수 ───────────────────────────── */}
+        {/* ── Input area ───────────────────────────────────────────── */}
         <div
           style={{
-            borderTop: `1px solid ${v.border}`,
+            borderTop:       `1px solid ${v.border}`,
             backgroundColor: v.bg,
-            padding: `16px var(--page-px) 24px`,
+            padding:         `16px var(--page-px) 24px`,
           }}
         >
           {isLoaded && (
@@ -116,8 +119,8 @@ export function ChatPageClient() {
 /* ── TopBar ─────────────────────────────────────────────────────────────── */
 
 function TopBar({ user }: { user: User }) {
-  const email = user.email ?? ''
-  const name =
+  const email    = user.email ?? ''
+  const name     =
     (user.user_metadata?.full_name as string | undefined) ??
     email.split('@')[0].toUpperCase()
   const initials = name.slice(0, 2).toUpperCase()
@@ -131,8 +134,8 @@ function TopBar({ user }: { user: User }) {
     <div
       className="flex items-center justify-end gap-4 flex-shrink-0"
       style={{
-        borderBottom: `1px solid ${v.border}`,
-        padding: '10px var(--page-px)',
+        borderBottom:    `1px solid ${v.border}`,
+        padding:         '10px var(--page-px)',
         backgroundColor: v.bg,
       }}
       role="banner"
@@ -142,14 +145,14 @@ function TopBar({ user }: { user: User }) {
       <div
         className="flex items-center justify-center flex-shrink-0"
         style={{
-          width: '20px',
-          height: '20px',
-          border: `1px solid ${v.border}`,
-          backgroundColor: v.surfaceHover,
-          fontFamily: v.fontMono,
-          fontSize: '10px',
-          color: v.textMuted,
-          userSelect: 'none',
+          width:           '20px',
+          height:          '20px',
+          border:          `1px solid ${v.border}`,
+          backgroundColor: v.surfaceElevated,
+          fontFamily:      v.fontMono,
+          fontSize:        '10px',
+          color:           v.textMuted,
+          userSelect:      'none',
         }}
         aria-hidden="true"
       >
@@ -157,13 +160,7 @@ function TopBar({ user }: { user: User }) {
       </div>
 
       {/* Email */}
-      <span
-        style={{
-          fontFamily: v.fontMono,
-          fontSize: '11px',
-          color: v.textDim,
-        }}
-      >
+      <span style={{ fontFamily: v.fontMono, fontSize: '11px', color: v.textDim }}>
         {email}
       </span>
 
@@ -171,22 +168,19 @@ function TopBar({ user }: { user: User }) {
       <button
         type="button"
         onClick={handleSignOut}
-        className="cursor-pointer transition-colors duration-[180ms]"
+        className="cursor-pointer"
         style={{
-          fontFamily: v.fontMono,
-          fontSize: '11px',
-          color: v.textDim,
-          background: 'none',
-          border: 'none',
-          padding: 0,
+          fontFamily:    v.fontMono,
+          fontSize:      '11px',
+          color:         v.textDim,
+          background:    'none',
+          border:        'none',
+          padding:       0,
           letterSpacing: '0.02em',
+          transition:    `color var(--dur) var(--ease-out)`,
         }}
-        onMouseEnter={(e) => {
-          e.currentTarget.style.color = v.text
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.color = v.textDim
-        }}
+        onMouseEnter={(e) => { e.currentTarget.style.color = v.accent }}
+        onMouseLeave={(e) => { e.currentTarget.style.color = v.textDim }}
         aria-label="로그아웃"
       >
         [sign out]
@@ -199,15 +193,12 @@ function TopBar({ user }: { user: User }) {
 
 function LoginPrompt() {
   return (
-    <div
-      style={{ maxWidth: 'var(--chat-max-w)' }}
-      className="flex items-center gap-4"
-    >
+    <div style={{ maxWidth: 'var(--chat-max-w)' }} className="flex items-center gap-4">
       <span
         style={{
-          fontFamily: v.fontMono,
-          fontSize: '11px',
-          color: v.textDim,
+          fontFamily:    v.fontMono,
+          fontSize:      '11px',
+          color:         v.textDim,
           letterSpacing: '0.02em',
         }}
       >
